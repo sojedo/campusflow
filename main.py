@@ -19,11 +19,11 @@ def print_menu():
     print("\n=================== CAMPUSFLOW CLI ===================")
     print("1. Create Ticket (F1)")
     print("2. List All / View Ticket (F2)")
-    print("3. Assign Ticket (F3) [Pending Engineer B]")
-    print("4. Update Status Workflow (F4) [Pending Engineer B]")
-    print("5. View Work Queue (F5) [Pending Engineer B]")
-    print("6. View Reports (F6) [Pending Engineer B]")
-    print("7. Exit & Save (F7)")
+    print("3. Assign Ticket")
+    print("4. Update Status Workflow")
+    print("5. View Work Queue")
+    print("6. View Reports")
+    print("7. Exit & Save")
     print("======================================================")
 
 
@@ -48,7 +48,7 @@ def main():
 
             try:
                 users_cnt = int(users_in)
-                ticket = create_ticket(title, category, urgency, users_cnt, tickets)
+                ticket = create_ticket(tickets, title, category, urgency, users_cnt)
                 tickets.append(ticket)
                 save_tickets(STORAGE_FILE, tickets)
                 print(f"\nSUCCESS: Ticket created with ID {ticket['id']} and Priority [{ticket['priority'].upper()}].")

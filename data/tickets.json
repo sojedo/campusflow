@@ -1,0 +1,12 @@
+[
+  {
+    "id": "T001",
+    "title": "Wi-Fi is down",
+    "category": "Network",
+    "urgency": "high",
+    "affected_users": 5,
+    "priority": "high",
+    "status": "open",
+    "assigned_to": null
+  }
+]
