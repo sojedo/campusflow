@@ -68,29 +68,26 @@ def calculate_priority(urgency: str, affected_users: int) -> str:
         return "low"
 
 
-def generate_next_id(existing_tickets: dict) -> str:
-    """
-    for generating unique ID.
-    prevents duplicate ID.
-    """
-    if not existing_tickets:
-        return "T001"
-        
-    max_numeric_id = 0
-    
-    for ticket_id in existing_tickets.keys():
-        
-        if ticket_id.startswith("T"):
+def generate_next_id(existing_tickets):
+    # Support both list and dictionary ticket stores
+    if isinstance(existing_tickets, dict):
+        ticket_ids = existing_tickets.keys()
+    elif isinstance(existing_tickets, list):
+        ticket_ids = [t.get("id") or t.get("ticket_id") for t in existing_tickets if isinstance(t, dict)]
+    else:
+        ticket_ids = []
+
+    # Extract numbers from IDs like "TICK-001"
+    ids = []
+    for tid in ticket_ids:
+        if tid and isinstance(tid, str) and "-" in tid:
             try:
-                
-                numeric_part = int(ticket_id[1:])
-                if numeric_part > max_numeric_id:
-                    max_numeric_id = numeric_part
+                ids.append(int(tid.split("-")[-1]))
             except ValueError:
-                continue
+                pass
                 
-    next_numeric_id = max_numeric_id + 1
-    return f"T{next_numeric_id:03d}"
+    next_num = max(ids, default=0) + 1
+    return f"TICK-{next_num:03d}"
 
 
 def create_ticket(existing_tickets: dict, title: str, category: str, urgency: str, affected_users: int) -> dict:

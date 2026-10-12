@@ -7,6 +7,16 @@
     "affected_users": 5,
     "priority": "high",
     "status": "open",
+    "assigned_to": "Nenna"
+  },
+  {
+    "id": "TICK-001",
+    "title": "wifi is down",
+    "category": "Network",
+    "urgency": "high",
+    "affected_users": 4,
+    "priority": "high",
+    "status": "open",
     "assigned_to": null
   }
 ]

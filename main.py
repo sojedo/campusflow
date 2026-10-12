@@ -3,7 +3,8 @@
 import os
 from campusflow.tickets import create_ticket
 from campusflow.storage import load_tickets, save_tickets
-
+from campusflow.workflow import assign_ticket, update_status, get_work_queue
+from campusflow.reports import generate_reports
 STORAGE_FILE = os.path.join("data", "tickets.json")
 
 
@@ -72,8 +73,47 @@ def main():
                 else:
                     print(f"Ticket '{sub}' not found.")
 
-        elif choice in ("3", "4", "5", "6"):
-            print("\n[INFO] This option will be enabled after Engineer B merges their workflow features.")
+        elif choice == "3":
+            print("\n--- ASSIGN TICKET ---")
+            tid = input("Enter Ticket ID to assign: ").strip().upper()
+            staff = input("Enter Staff Name: ").strip()
+            try:
+                ticket = assign_ticket(tickets, tid, staff)
+                save_tickets(STORAGE_FILE, tickets)
+                print(f"\nSUCCESS: Ticket {tid} assigned to '{ticket['assigned_to']}'.")
+            except (KeyError, ValueError) as err:
+                print(f"\nERROR: {err}")
+
+        elif choice == "4":
+            print("\n--- UPDATE STATUS ---")
+            tid = input("Enter Ticket ID: ").strip().upper()
+            st = input("Enter new status (open / in_progress / resolved): ").strip().lower()
+            try:
+                ticket = update_status(tickets, tid, st)
+                save_tickets(STORAGE_FILE, tickets)
+                print(f"\nSUCCESS: Ticket {tid} status updated to '{ticket['status']}'.")
+            except (KeyError, ValueError) as err:
+                print(f"\nERROR: {err}")
+
+        elif choice == "5":
+            print("\n--- WORK QUEUE (Sorted by Priority & ID) ---")
+            queue = get_work_queue(tickets)
+            if not queue:
+                print("No unresolved tickets in queue.")
+            else:
+                for t in queue:
+                    display_ticket(t)
+
+        elif choice == "6":
+            print("\n--- SYSTEM REPORT ---")
+            report = generate_reports(tickets)
+            print(f"Total Tickets: {report['total']}")
+            print("Status Breakdown:")
+            for k, v in report["status_breakdown"].items():
+                print(f"  - {k}: {v}")
+            print("Priority Breakdown:")
+            for k, v in report["priority_breakdown"].items():
+                print(f"  - {k}: {v}")
 
         elif choice == "7":
             save_tickets(STORAGE_FILE, tickets)
@@ -81,7 +121,5 @@ def main():
             break
         else:
             print("\nInvalid choice. Please pick between 1 and 7.")
-
-
 if __name__ == "__main__":
     main()
